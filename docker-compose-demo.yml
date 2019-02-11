@@ -1,19 +1,8 @@
-# Start ExplorViz with latest development changes in 'demo mode'
-# Pre-defined software landscape will be visualized
-# Monitored applications cannot be connected
+# Start ExplorViz with latest development changes
+# Monitored applications can be connected
 
 version: "3.2"
 services:
-
-  reverse-proxy:
-    image: explorviz/reverse-proxy:production
-    container_name: explorviz-reverse-proxy
-    depends_on:
-      - authentication
-      - landscape
-      - discovery
-    ports:
-      - "8080:8080"
 
   mongo:
     image: mongo
@@ -50,7 +39,12 @@ services:
     ports:
       - "8090:80"
     environment:
-      - API_ROOT=http://localhost:8080
+      - API_ROOT=http://localhost:8090
+    depends_on:
+      - discovery
+      - landscape
+      - analysis
+      - authentication
 
 volumes:
   explorviz-auth-mongo-data:
