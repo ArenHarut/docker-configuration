@@ -17,6 +17,6 @@ Hint: You can change the default frontend port (8090) in the respective docker-c
 5. Stopping ExplorViz: `$docker-compose -f docker-compose-X.yml down`. 
 
 ### Updating
-1. Stop and remove all ExplorViz Docker containers: `docker-compose -f docker-compose-X.yml down`.
-2. Remove all related ExplorViz Docker images: `docker rmi $(docker images "explorviz/*" -q)`.
+1. Stop and remove all ExplorViz Docker containers: `$docker-compose -f docker-compose-X.yml down`.
+2. Remove all related ExplorViz Docker images: `$docker rmi $(docker images "explorviz/*" -q)`.
 3. Follow the [Usage](#usage) section above.
