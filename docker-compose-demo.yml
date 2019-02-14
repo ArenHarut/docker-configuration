@@ -1,5 +1,5 @@
-# Start ExplorViz with latest development changes
-# Monitored applications can be connected
+# Start ExplorViz Demo
+# Monitored application cannot be connected
 
 version: "3.2"
 services:
@@ -12,7 +12,7 @@ services:
        - explorviz-auth-mongo-configdb:/data/configdb
 
   authentication:
-    image: explorviz/explorviz-backend-authentication:dev
+    image: explorviz/explorviz-backend-authentication:latest
     container_name: explorviz-backend-auth
     depends_on:
       - mongo
@@ -20,21 +20,21 @@ services:
       - MONGO_IP=mongo
 
   landscape:
-    image: explorviz/explorviz-backend-landscape:dev
+    image: explorviz/explorviz-backend-landscape:latest
     container_name: explorviz-backend-landscape
     environment:
       - DUMMY_MODE=true
 
   analysis:
-    image: explorviz/explorviz-backend-analysis:dev
+    image: explorviz/explorviz-backend-analysis:latest
     container_name: explorviz-backend-analysis
 
   discovery:
-    image: explorviz/explorviz-backend-discovery:dev
+    image: explorviz/explorviz-backend-discovery:latest
     container_name: explorviz-backend-discovery
 
   frontend:
-    image: explorviz/explorviz-frontend:dev
+    image: explorviz/explorviz-frontend:latest
     container_name: explorviz-frontend
     ports:
       - "8090:80"
