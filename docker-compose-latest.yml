@@ -4,16 +4,6 @@
 version: "3.2"
 services:
 
-  reverse-proxy:
-    image: explorviz/reverse-proxy:production
-    container_name: explorviz-reverse-proxy
-    depends_on:
-      - authentication
-      - landscape
-      - discovery
-    ports:
-      - "8080:8080"
-
   mongo:
     image: mongo
     container_name: explorviz-backend-auth-mongo
@@ -51,7 +41,12 @@ services:
     ports:
       - "8090:80"
     environment:
-      - API_ROOT=http://localhost:8080
+      - API_ROOT=http://localhost:8090
+    depends_on:
+      - discovery
+      - landscape
+      - analysis
+      - authentication
 
 volumes:
   explorviz-auth-mongo-data:
