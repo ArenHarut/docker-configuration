@@ -1,0 +1,53 @@
+# Start ExplorViz version 1.3.0
+# Monitored applications can be connected
+
+version: "3.2"
+services:
+
+  mongo:
+    image: mongo
+    container_name: explorviz-backend-auth-mongo
+    volumes:
+       - explorviz-auth-mongo-data:/data/db
+       - explorviz-auth-mongo-configdb:/data/configdb
+
+  authentication:
+    image: explorviz/explorviz-backend-authentication:1.3.0
+    container_name: explorviz-backend-auth
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_IP=mongo
+
+  landscape:
+    image: explorviz/explorviz-backend-landscape:1.3.0
+    container_name: explorviz-backend-landscape
+
+  analysis:
+    image: explorviz/explorviz-backend-analysis:1.3.0
+    container_name: explorviz-backend-analysis
+    ports:
+      - "10133:10133"
+
+  discovery:
+    image: explorviz/explorviz-backend-discovery:1.3.0
+    container_name: explorviz-backend-discovery
+    ports:
+      - "8083:8083"
+
+  frontend:
+    image: explorviz/explorviz-frontend:1.3.0
+    container_name: explorviz-frontend
+    ports:
+      - "8090:80"
+    environment:
+      - API_ROOT=http://localhost:8090
+    depends_on:
+      - discovery
+      - landscape
+      - analysis
+      - authentication
+
+volumes:
+  explorviz-auth-mongo-data:
+  explorviz-auth-mongo-configdb:
