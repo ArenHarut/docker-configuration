@@ -4,24 +4,36 @@
 version: "3.2"
 services:
 
-  mongo:
+  mongo-auth:
     image: mongo
     container_name: explorviz-backend-auth-mongo
     volumes:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
 
+  mongo-landscape:
+    image: mongo
+    container_name: explorviz-landscape-mongo
+    command: mongod --port 27018
+    volumes:
+       - explorviz-landscape-mongo-data:/data/db
+       - explorviz-landscape-mongo-configdb:/data/configdb
+
   authentication:
     image: explorviz/explorviz-backend-authentication:dev
     container_name: explorviz-backend-auth
     depends_on:
-      - mongo
+      - mongo-auth
     environment:
-      - MONGO_IP=mongo
+      - MONGO_HOST=mongo-auth
 
   landscape:
     image: explorviz/explorviz-backend-landscape:dev
     container_name: explorviz-backend-landscape
+    depends_on:
+      - mongo-landscape
+    environment:
+      - MONGO_HOST=mongo-landscape
 
   analysis:
     image: explorviz/explorviz-backend-analysis:dev
@@ -51,3 +63,5 @@ services:
 volumes:
   explorviz-auth-mongo-data:
   explorviz-auth-mongo-configdb:
+  explorviz-landscape-mongo-data:
+  explorviz-landscape-mongo-configdb:
