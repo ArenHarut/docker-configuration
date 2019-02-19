@@ -2,6 +2,7 @@
 ### Description
 This repository contains docker-compose files for different configurations of ExplorViz:
 
+- `docker-compose-X.yml`: the release version `X` of ExplorViz. 
 - `docker-compose-latest.yml`: the latest stable version of ExplorViz. 
 - `docker-compose-demo.yml`: a [working demo of ExplorViz](http://samoa.se.informatik.uni-kiel.de:8181/) based on the latest development snapshot.
 - `docker-compose-dev.yml`: the latest development snapshot of ExplorViz.
