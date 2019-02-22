@@ -7,9 +7,12 @@ services:
   mongo-auth:
     image: mongo
     container_name: explorviz-backend-auth-mongo
+    command: mongod --port 27017
     volumes:
        - explorviz-auth-mongo-data:/data/db
        - explorviz-auth-mongo-configdb:/data/configdb
+    ports:
+      - "27017:27017"
 
   mongo-landscape:
     image: mongo
@@ -18,6 +21,8 @@ services:
     volumes:
        - explorviz-landscape-mongo-data:/data/db
        - explorviz-landscape-mongo-configdb:/data/configdb
+    ports:
+      - "27018:27018"
 
   authentication:
     image: explorviz/explorviz-backend-authentication:dev
