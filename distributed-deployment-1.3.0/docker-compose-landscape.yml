@@ -1,0 +1,16 @@
+# Start ExplorViz analysis and landscape service (version 1.3.0)
+
+version: "3.2"
+services:
+
+  analysis:
+    image: explorviz/explorviz-backend-analysis:1.3.0
+    container_name: explorviz-backend-analysis
+    ports:
+      - "10133:10133"
+
+  landscape:
+    image: explorviz/explorviz-backend-landscape:1.3.0
+    container_name: explorviz-backend-landscape
+    ports:
+      - "YOUR-LANDSCAPE-PORT:8081"

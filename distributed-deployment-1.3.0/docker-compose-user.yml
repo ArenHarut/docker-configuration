@@ -1,0 +1,25 @@
+# Start ExplorViz user-related services (version 1.3.0)
+
+version: "3.2"
+services:
+
+  mongo:
+    image: mongo
+    container_name: explorviz-backend-auth-mongo
+    volumes:
+       - explorviz-auth-mongo-data:/data/db
+       - explorviz-auth-mongo-configdb:/data/configdb
+
+  authentication:
+    image: explorviz/explorviz-backend-authentication:1.3.0
+    container_name: explorviz-backend-auth
+    ports:
+      - "YOUR-USER-PORT:8082"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_IP=mongo
+
+volumes:
+  explorviz-auth-mongo-data:
+  explorviz-auth-mongo-configdb:

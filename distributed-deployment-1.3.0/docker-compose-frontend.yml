@@ -1,0 +1,15 @@
+# Start ExplorViz frontend version 1.3.0
+
+version: "3.2"
+services:
+
+  frontend:
+    image: explorviz/explorviz-frontend:1.3.0
+    container_name: explorviz-frontend
+    ports:
+      - "YOUR-FRONTEND-PORT:80"
+    environment:
+      - API_ROOT=http://YOUR-FRONTEND-IP-HOSTNAME:YOUR-FRONTEND-PORT
+      - API_ROOT_LANDSCAPE=http://YOUR-LANDSCAPE-IP-HOSTNAME:YOUR-LANDSCAPE-PORT
+      - API_ROOT_USER=http://YOUR-USER-IP-HOSTNAME:YOUR-USER-PORT
+      - API_ROOT_DISCOVERY=http://YOUR-DISCOVERY-IP-HOSTNAME:YOUR-DISCOVERY-PORT

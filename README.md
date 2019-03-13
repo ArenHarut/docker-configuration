@@ -1,4 +1,4 @@
-# Docker-Configuration
+# ExplorViz Docker Configurations
 ### Description
 This repository contains docker-compose files for different configurations of ExplorViz:
 
