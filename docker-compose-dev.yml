@@ -1,6 +1,10 @@
 # Start ExplorViz with latest development changes
 # Monitored applications can be connected
 
+# Environment Variables are based on the 
+# properties file of each service, e.g, 
+# https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
+
 version: "3.2"
 services:
 
@@ -28,8 +32,8 @@ services:
     depends_on:
       - kafka
     environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_TOPIC=landscape-update
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     expose:
       - "10135"
 
@@ -37,23 +41,21 @@ services:
     image: explorviz/explorviz-backend-broadcast-service:dev
     container_name: explorviz-backend-broadcast-service
     depends_on:
-      - mongo-landscape
       - kafka
     environment:
-      - MONGO_HOST=mongo-landscape
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_TOPIC=landscape-update
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
 
   history-service:
     image: explorviz/explorviz-backend-history-service:dev
     container_name: explorviz-backend-history-service
     depends_on:
-      - mongo-landscape
+      - mongo-history
       - kafka
     environment:
-      - MONGO_HOST=mongo-landscape
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_TOPIC=landscape-update
+      - MONGO_HOST=mongo-history
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
 
   analysis-service:
     image: explorviz/explorviz-backend-analysis-service:dev
@@ -121,13 +123,13 @@ services:
     expose:
       - "27017"
 
-  mongo-landscape:
+  mongo-history:
     image: mongo
     container_name: explorviz-landscape-mongo
     command: mongod --port 27018
     volumes:
-       - explorviz-landscape-mongo-data:/data/db
-       - explorviz-landscape-mongo-configdb:/data/configdb
+       - explorviz-history-mongo-data:/data/db
+       - explorviz-history-mongo-configdb:/data/configdb
     expose:
       - "27018"
 
@@ -144,8 +146,8 @@ services:
 volumes:
   explorviz-user-mongo-data:
   explorviz-user-mongo-configdb:
-  explorviz-landscape-mongo-data:
-  explorviz-landscape-mongo-configdb:
+  explorviz-history-mongo-data:
+  explorviz-history-mongo-configdb:
   explorviz-settings-mongo-data:
   explorviz-settings-mongo-configdb:
   explorviz-id-generator-data:
