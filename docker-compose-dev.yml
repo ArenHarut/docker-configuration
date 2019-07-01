@@ -15,16 +15,20 @@ services:
     container_name: explorviz-backend-user-service
     depends_on:
       - mongo-user
+      - kafka
     environment:
       - MONGO_HOST=mongo-user
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   settings-service:
     image: explorviz/explorviz-backend-settings-service:dev
     container_name: explorviz-backend-settings-service
     depends_on:
       - mongo-settings
+      - kafka
     environment:
       - MONGO_HOST=mongo-settings
+      - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   landscape-service:
     image: explorviz/explorviz-backend-landscape-service:dev
