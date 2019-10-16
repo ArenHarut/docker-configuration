@@ -7,7 +7,7 @@
 # properties file of each service, e.g, 
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
-version: "3.2"
+version: "3.3"
 services:
 
   ### ExplorViz Services ###
@@ -26,8 +26,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`)"
       - "traefik.port=8082"
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
 
   settings-service:
     image: explorviz/explorviz-backend-settings-service:1.4.0
@@ -43,8 +43,8 @@ services:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/settings/preferences`)"
       - "traefik.port=8087"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/settings/preferences`)"
 
   landscape-service:
     image: explorviz/explorviz-backend-landscape-service:1.4.0
@@ -72,8 +72,8 @@ services:
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
     labels:
       - "traefik.enable=true"
+      - "traefik.port=8081"
       - "traefik.http.routers.broadcast-service.rule=PathPrefix(`/v1/landscapes/broadcast`)"
-      - "traefik.port=8086"
       - "traefik.http.routers.broadcast-service.priority=200"
 
   history-service:
@@ -110,8 +110,8 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
       - "traefik.port=8083"
+      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
 
   frontend:
     image: explorviz/explorviz-frontend:1.4.0
