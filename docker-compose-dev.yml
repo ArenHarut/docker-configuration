@@ -1,11 +1,13 @@
-# Start ExplorViz with latest development changes
+# Start ExplorViz in development version
 # Monitored applications can be connected
+
+# go to http://localhost:8090 to open the ExplorViz Frontend
 
 # Environment Variables are based on the 
 # properties file of each service, e.g, 
 # https://github.com/ExplorViz/explorviz-backend/blob/dev-1/user-service/src/main/resources/explorviz.properties
 
-version: "3.2"
+version: "3.3"
 services:
 
   ### ExplorViz Services ###
@@ -13,53 +15,84 @@ services:
   user-service:
     image: explorviz/explorviz-backend-user-service:dev
     container_name: explorviz-backend-user-service
+    expose:
+      - "8082"
     depends_on:
       - mongo-user
       - kafka
+      - traefik
     environment:
       - MONGO_HOST=mongo-user
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8082"
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
 
   settings-service:
     image: explorviz/explorviz-backend-settings-service:dev
     container_name: explorviz-backend-settings-service
+    expose:
+      - "8087"
     depends_on:
       - mongo-settings
       - kafka
+      - traefik
     environment:
       - MONGO_HOST=mongo-settings
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8087"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/settings/preferences`)"
 
   landscape-service:
     image: explorviz/explorviz-backend-landscape-service:dev
     container_name: explorviz-backend-landscape-service
+    ports:
+      - "10135:10135"
+    expose:
+      - "10135"
     depends_on:
       - kafka
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
-    expose:
-      - "10135"
 
   broadcast-service:
     image: explorviz/explorviz-backend-broadcast-service:dev
     container_name: explorviz-backend-broadcast-service
+    expose:
+      - "8081"
     depends_on:
       - kafka
+      - traefik
     environment:
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8081"
+      - "traefik.http.routers.broadcast-service.rule=PathPrefix(`/v1/landscapes/broadcast`)"
+      - "traefik.http.routers.broadcast-service.priority=200"
 
   history-service:
     image: explorviz/explorviz-backend-history-service:dev
     container_name: explorviz-backend-history-service
+    expose:
+      - "8086"
     depends_on:
       - mongo-history
       - kafka
+      - traefik
     environment:
       - MONGO_HOST=mongo-history
       - EXCHANGE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - EXCHANGE_KAFKA_TOPIC_NAME=landscape-update
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.history-service.rule=PathPrefix(`/v1/landscapes`) || PathPrefix(`/v1/timestamps`) "
+      - "traefik.port=8086"
 
   analysis-service:
     image: explorviz/explorviz-backend-analysis-service:dev
@@ -74,6 +107,11 @@ services:
       - "8083:8083"
     depends_on:
       - id-generator
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8083"
+      - "traefik.http.routers.discovery-service.rule=PathPrefix(`/v1/agents`)"
 
   frontend:
     image: explorviz/explorviz-frontend:dev
@@ -81,15 +119,21 @@ services:
     ports:
       - "8090:80"
     environment:
-      - API_ROOT=http://localhost:8090
-    depends_on:
-      - discovery-service
-      - landscape-service
-      - analysis-service
-      - user-service
-      - history-service
+      - API_ROOT=http://localhost:8080
 
   ### Software Stack ###
+
+  traefik:
+    image: "traefik:v2.0.1"
+    container_name: "explorviz-reverse-proxy"
+    command:
+      - "--entrypoints.web.address=:8080"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   zookeeper:
     container_name: zookeeper
@@ -138,14 +182,14 @@ services:
       - "27018"
 
   mongo-settings:
-     image: mongo
-     container_name: explorviz-settings-mongo
-     command: mongod --port 27019
-     ports:
-     - 27019:27019
-     volumes:
-     - explorviz-settings-mongo-data:/data/db
-     - explorviz-settings-mongo-configdb:/data/configdb
+    image: mongo
+    container_name: explorviz-settings-mongo
+    command: mongod --port 27019
+    ports:
+      - 27019:27019
+    volumes:
+      - explorviz-settings-mongo-data:/data/db
+      - explorviz-settings-mongo-configdb:/data/configdb
 
 volumes:
   explorviz-user-mongo-data:
