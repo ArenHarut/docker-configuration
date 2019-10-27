@@ -119,7 +119,8 @@ services:
     ports:
       - "8090:80"
     environment:
-      - API_ROOT=http://localhost:8080
+      - FRONTEND_IP=http://localhost:8090
+      - API_ROOT=http://traefik:8080
 
   ### Software Stack ###
 
