@@ -119,7 +119,7 @@ services:
       - "8090:80"
     environment:
       - API_ROOT=http://traefik:8080
-      - FRONTEND_IP=http://192.168.48.243:8090
+      - FRONTEND_IP=http://localhost:8090
       # Change localhost to your host ip adress, if you want to connect 
       # from remote devices
     depends_on:
