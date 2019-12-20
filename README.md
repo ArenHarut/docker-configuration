@@ -12,7 +12,7 @@ Hint: You can change the default frontend port (8090) in the respective docker-c
 ### Usage
 1. Get the latest versions of [Docker and Docker Compose](https://www.docker.com/get-started).
 2. Download one of the presented docker-compose configuration files.
-3. Adjust the `API_ROOT` variable to point to the domain or IP you will be accessing ExplorViz with. Depending on which machine you apply docker-compose, either use the machine's IP/hostname or localhost.
+(3. Until version 1.5.0: Adjust the `API_ROOT` variable to point to the domain or IP you will be accessing ExplorViz with. Depending on which machine you apply docker-compose, either use the machine's IP/hostname or localhost.)
 4. Starting ExplorViz: `docker-compose -f docker-compose-X.yml up -d`.
 5. Open the frontend in your browser by accessing [http://YOUR-IP:8090](http://YOUR-IP:8090).
 6. Stopping ExplorViz: `docker-compose -f docker-compose-X.yml down`. 
