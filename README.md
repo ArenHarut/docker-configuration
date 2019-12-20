@@ -4,7 +4,7 @@ This repository contains docker-compose files for different configurations of Ex
 
 - `docker-compose-X.yml`: the release version `X` of ExplorViz. 
 - `docker-compose-latest.yml`: the latest stable version of ExplorViz. 
-- `docker-compose-demo.yml`: a [working demo of ExplorViz](http://samoa.se.informatik.uni-kiel.de:8181/) based on the latest release version.
+- `docker-compose-demo.yml`: a [working demo of ExplorViz](http://samoa.se.informatik.uni-kiel.de:8090/) based on the latest release version.
 - `docker-compose-dev.yml`: the latest development snapshot of ExplorViz.
 
 Hint: You can change the default frontend port (8090) in the respective docker-compose file.
