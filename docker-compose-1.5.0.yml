@@ -118,7 +118,8 @@ services:
     ports:
       - "8090:80"
     environment:
-      - API_ROOT=http://localhost:8080
+      - API_ROOT=http://traefik:8080
+      - FRONTEND_IP=
     depends_on:
       - discovery-service
       - landscape-service
