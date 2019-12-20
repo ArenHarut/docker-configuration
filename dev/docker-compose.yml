@@ -1,4 +1,4 @@
-# Start ExplorViz in development version
+# Start ExplorViz Backend in version dev
 # Monitored applications can be connected
 
 # go to http://localhost:8090 to open the ExplorViz Frontend
@@ -27,7 +27,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=8082"
-      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`)"
+      - "traefik.http.routers.user-service.rule=PathPrefix(`/v1/tokens`) || PathPrefix(`/v1/users`) || PathPrefix(`/v1/roles`) || PathPrefix(`/v1/userbatch`)"
 
   settings-service:
     image: explorviz/explorviz-backend-settings-service:dev
@@ -44,7 +44,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=8087"
-      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings/info`) || PathPrefix(`/v1/users/{uid}/settings`) || PathPrefix(`/v1/users/settings/preferences`)"
+      - "traefik.http.routers.settings-service.rule=PathPrefix(`/v1/settings`) || PathPrefix(`/v1/preferences`)"
 
   landscape-service:
     image: explorviz/explorviz-backend-landscape-service:dev
@@ -106,7 +106,6 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - id-generator
       - traefik
     labels:
       - "traefik.enable=true"
@@ -119,8 +118,17 @@ services:
     ports:
       - "8090:80"
     environment:
-      - FRONTEND_IP=http://localhost:8090
       - API_ROOT=http://traefik:8080
+      - FRONTEND_IP=http://192.168.48.243:8090
+      # Change localhost to your host ip adress, if you want to connect 
+      # from remote devices
+    depends_on:
+      - discovery-service
+      - landscape-service
+      - analysis-service
+      - user-service
+      - settings-service
+      - history-service
 
   ### Software Stack ###
 
@@ -153,14 +161,6 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-  id-generator:
-    image: redis
-    container_name: explorviz-id-generator
-    command: ["redis-server", "--appendonly", "yes"]
-    expose:
-      - "6379"
-    volumes:
-      - explorviz-id-generator-data:/data
 
   mongo-user:
     image: mongo
@@ -177,8 +177,8 @@ services:
     container_name: explorviz-landscape-mongo
     command: mongod --port 27018
     volumes:
-       - explorviz-history-mongo-data:/data/db
-       - explorviz-history-mongo-configdb:/data/configdb
+       - explorviz-landscape-mongo-data:/data/db
+       - explorviz-landscape-mongo-configdb:/data/configdb
     expose:
       - "27018"
 
@@ -195,8 +195,7 @@ services:
 volumes:
   explorviz-user-mongo-data:
   explorviz-user-mongo-configdb:
-  explorviz-history-mongo-data:
-  explorviz-history-mongo-configdb:
+  explorviz-landscape-mongo-data:
+  explorviz-landscape-mongo-configdb:
   explorviz-settings-mongo-data:
   explorviz-settings-mongo-configdb:
-  explorviz-id-generator-data:
